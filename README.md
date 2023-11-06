@@ -487,3 +487,397 @@ const isMarried = undefined;
 const maritalStatus = isMarried ?? "Unmarried";
 console.log({ maritalStatus });
 ```
+
+## Type Casting
+
+- Type Casting is the process of overriding a type.
+
+```ts
+// type casting using as
+let x: any;
+x = "hello";
+
+console.log((x as string).toUpperCase());
+
+let age: any;
+age = 19;
+console.log((age as number).toFixed(2));
+
+const kmTom = (km: string | number): number | undefined => {
+  if (typeof km === "string") {
+    return parseFloat(km) * 1000;
+  } else if (typeof km === "number") {
+    return km * 1000;
+  }
+};
+
+const meter = kmTom(5.7) as number;
+console.log(meter);
+```
+
+## Interfaces
+
+- interface: type defining for non-primitive
+
+```ts
+{
+  interface Rectangle {
+    height: number;
+    width: number;
+  }
+
+  const rectangular: Rectangle = {
+    height: 500,
+    width: 500,
+  };
+
+  console.log(rectangular);
+
+```
+
+```ts
+//   extends interface
+interface ColoredRectangle extends Rectangle {
+  color: string;
+}
+
+const coloredRectangle: ColoredRectangle = {
+  height: 20,
+  width: 10,
+  color: "red",
+};
+
+console.log(coloredRectangle);
+```
+
+```ts
+//   interface in array
+interface NumbersArray {
+  [index: number]: number;
+}
+const numbers: NumbersArray = [1, 2, 3, 4, 5];
+console.log(numbers);
+```
+
+```ts
+//   interface in function
+interface Add {
+  (num1: number, num2: number): number;
+}
+
+const add: Add = (num1, num2) => num1 + num2;
+console.log(add(13, 45));
+}
+```
+
+## Generics
+
+```ts
+const numbers: Array<number> = [1, 2, 3, 4, 5];
+const friends: Array<string> = ["Rohim", "Karim", "Sakib"];
+const mentors: Array<{ name: string; age: number }> = [
+  { name: "Farhad", age: 19 },
+  { name: "Shkib", age: 16 },
+];
+```
+
+```ts
+// dynamic type generics
+type GenericArray<T> = Array<T>;
+
+const marks: GenericArray<number> = [45, 67, 89, 60];
+const subjects: GenericArray<string> = ["Math", "Physics", "Chemistry"];
+
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
+const users: GenericArray<User> = [
+  { id: 1, name: "Farhad", role: "Admin" },
+  { id: 2, name: "Shkib", role: "Gest" },
+];
+```
+
+```ts
+// generic tuple
+type GenericTuple<X, Y> = [X, Y];
+const coupleTuple: GenericTuple<string, string> = ["Mr. X", "Ms Y"];
+```
+
+```ts
+// ---------------> Interface With Generic ------------------->
+interface Developer<TSmartWatch, TBike = null> {
+  name: string;
+  age: number;
+  isMarried: boolean;
+  gender: "Male" | "Female";
+  computer: {
+    brand: string;
+    model: string;
+    info: string;
+    releaseYear: number;
+  };
+  smartWatch: TSmartWatch;
+  bike?: TBike;
+}
+
+interface EmilabWatch {
+  brand: "Emilab";
+  model: string;
+  display: string;
+}
+
+interface AppleWatch {
+  brand: "Apple";
+  model: string;
+  heartTrack: boolean;
+  sleepTrack: boolean;
+}
+
+interface Bike {
+  brand: string;
+  model: string;
+}
+
+const poorDeveloper: Developer<EmilabWatch> = {
+  name: "Mohammad Farhad",
+  age: 19,
+  isMarried: false,
+  gender: "Male",
+  computer: {
+    brand: "ASUS",
+    model: "ASUS62h",
+    info: "8GB RAM & 256SSD",
+    releaseYear: 2020,
+  },
+  smartWatch: {
+    brand: "Emilab",
+    model: "kw66",
+    display: "OLED",
+  },
+};
+
+const reachDeveloper: Developer<AppleWatch, Bike> = {
+  name: "Mohammad Shakib",
+  age: 25,
+  isMarried: true,
+  gender: "Male",
+  computer: {
+    brand: "Macbook",
+    model: "Macbook PRO",
+    info: "8GB RAM & 256SSD",
+    releaseYear: 2022,
+  },
+  smartWatch: {
+    brand: "Apple",
+    model: "apple22",
+    heartTrack: true,
+    sleepTrack: true,
+  },
+  bike: {
+    brand: "YAMAHA",
+    model: "RDCJ20",
+  },
+};
+```
+
+```ts
+// <<------------------->> Function With Generics <<----------------->>
+const createArray = (pram: string): string[] => {
+  return [pram];
+};
+
+const res1 = createArray("Bangladesh");
+
+const createArrayWithGeneric = <T>(pram: T): T[] => {
+  return [pram];
+};
+
+const res2 = createArrayWithGeneric<string>("Bangladesh");
+
+const createTupleWithGeneric = <T, Q>(param1: T, param2: Q): [T, Q] => {
+  return [param1, param2];
+};
+
+const res3 = createTupleWithGeneric<string, { name: string }>(
+  "Mohammad Farhad",
+  {
+    name: "Mohammad Farhad",
+  }
+);
+
+const addCourseToStudent = <T>(student: T) => {
+  const course = "Next Level Web Dev";
+
+  return {
+    ...student,
+    course,
+  };
+};
+
+const student1 = addCourseToStudent({
+  name: "Mr X",
+  email: "x@abc.com",
+  devType: "NLWD",
+});
+
+const student2 = addCourseToStudent({
+  name: "Mr Y",
+  email: "y@abc.com",
+  watch: "APPLE Watch",
+});
+```
+
+```ts
+// -------------->> Constraints In Generics --------------->>
+const addCourseToStudent = <
+  T extends {
+    id: number;
+    name: string;
+    email: string;
+  }
+>(
+  student: T
+) => {
+  const course = "Next Level Web Dev";
+
+  return {
+    ...student,
+    course,
+  };
+};
+
+const student1 = addCourseToStudent({
+  id: 5,
+  name: "Mr X",
+  email: "x@abc.com",
+  devType: "NLWD",
+});
+
+const student2 = addCourseToStudent({
+  id: 7,
+  name: "Mr Y",
+  email: "y@abc.com",
+  watch: "APPLE Watch",
+});
+```
+
+## Asynchronous TypeScript
+
+```ts
+// basic promise
+const createPromise = (): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    const data: string = "something";
+    if (data) {
+      resolve(data);
+    } else {
+      reject("Something is wrong");
+    }
+  });
+};
+
+const runPromise = async () => {
+  const data: string = await createPromise();
+  return data;
+};
+
+runPromise();
+```
+
+```ts
+interface ToDo {
+  id: number;
+  userId: number;
+  title: string;
+  completed: boolean;
+}
+
+// fetching
+const getToDo = async (): Promise<ToDo> => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+  const data = await res.json();
+  console.log(data);
+  return data;
+};
+
+getToDo();
+```
+
+## Conditional Type
+
+```ts
+type A = null;
+type B = undefined;
+
+type C = A extends null ? true : B extends undefined ? true : any;
+```
+
+```ts
+interface Vehicle {
+  bike: string;
+  car: string;
+  ship: string;
+  plane: string;
+}
+
+type CheckVehicle<T> = T extends keyof Vehicle ? true : false;
+
+type HasPlane = CheckVehicle<"plane">;
+type HasBus = CheckVehicle<"bus">;
+```
+
+## Mapped Type
+
+```ts
+type AreaNumber = {
+  height: number;
+  width: number;
+};
+
+type AreaString = {
+  [key in keyof AreaNumber]: string;
+};
+```
+
+```ts
+type DynamicArea<T> = {
+  [key in keyof T]: T[key];
+};
+
+const area1: DynamicArea<{ height: string; width: number }> = {
+  height: "100",
+  width: 50,
+};
+```
+
+## Utility Type
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+  email?: string;
+  mobile?: string;
+}
+
+// ---------->>  Pick Type <<-----------
+type NameAge = Pick<Person, "name" | "age">;
+
+// ---------->>   Omit Type <<-----------
+type ContractInfo = Omit<Person, "name" | "age">;
+
+// ---------->>  Required Type <<-----------
+type PersonRequired = Required<Person>;
+
+// ---------->>  Partial Type <<-----------
+type PersonPartial = Partial<Person>;
+
+// ---------->>  Readonly Type <<-----------
+type PersonReadonly = Readonly<Person>;
+
+// ---------->>  Record Type <<-----------
+type EmptyObj = Record<string, unknown>;
+```
