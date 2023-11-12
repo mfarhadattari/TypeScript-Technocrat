@@ -881,3 +881,374 @@ type PersonReadonly = Readonly<Person>;
 // ---------->>  Record Type <<-----------
 type EmptyObj = Record<string, unknown>;
 ```
+
+## Type guard
+
+- Using typeof operator
+
+```ts
+type AlpaNumeric = number | string;
+const add = (value1: AlpaNumeric, value2: AlpaNumeric): AlpaNumeric => {
+  if (typeof value1 === "number" && typeof value2 === "number") {
+    return value1 + value2;
+  } else {
+    return value1.toString() + value2.toString();
+  }
+};
+
+const result1 = add(1, 4);
+console.log(result1);
+```
+
+- using in operator
+
+```ts
+interface NormalUser {
+  name: string;
+}
+
+interface AdminUser extends NormalUser {
+  role: "admin";
+}
+
+const getUser = (user: NormalUser | AdminUser) => {
+  if ("role" in user) {
+    console.log(`My name is ${user.name} and my role is ${user.role}.`);
+  } else {
+    console.log(`My name is ${user.name}.`);
+  }
+};
+
+const normalUser: NormalUser = {
+  name: "Normal Vai",
+};
+const adminUser: AdminUser = {
+  name: "Normal Vai",
+  role: "admin",
+};
+
+getUser(normalUser);
+getUser(adminUser);
+```
+
+## OOP: class
+
+```ts
+class Animal1 {
+  name: string;
+  species: string;
+  sound: string;
+  constructor(name: string, species: string, sound: string) {
+    this.name = name;
+    this.species = species;
+    this.sound = sound;
+  }
+
+  makeSound() {
+    console.log(`${this.name} is making sound ${this.sound}.`);
+  }
+}
+// Class with parameter properties
+class Animal2 {
+  constructor(
+    public name: string,
+    public species: string,
+    public sound: string
+  ) {}
+
+  makeSound() {
+    console.log(`${this.name} is making sound.`);
+  }
+}
+
+//   create instance
+const dog = new Animal1("Dog Bhai", "Dog", "Ghew Ghew");
+const cat = new Animal1("Cat Bhai", "Cat", "Meaw Meaw");
+```
+
+## OOP: Inheritance
+
+```ts
+class People {
+  name: string;
+  age: number;
+  address: string;
+  constructor(name: string, age: number, address: string) {
+    this.name = name;
+    this.age = age;
+    this.address = address;
+  }
+  sleep(sleepHour: number) {
+    console.log(`${this.name} sleep for ${sleepHour} hour.`);
+  }
+}
+
+class Student extends People {
+  constructor(name: string, age: number, address: string) {
+    super(name, age, address);
+  }
+  study(studyTime: number) {
+    console.log(`${this.name} study ${studyTime} hour every day.`);
+  }
+}
+
+const student = new Student("Farhad Student", 19, "Chattogram");
+
+class Teacher extends People {
+  designation: string;
+  constructor(name: string, age: number, address: string, designation: string) {
+    super(name, age, address);
+    this.designation = designation;
+  }
+  takeClass(numOfClass: number) {
+    console.log(`${this.name} take ${numOfClass} class everyday..`);
+  }
+}
+```
+
+## OOP: instanceof operator
+
+```ts
+class Animal {
+  name: string;
+  species: string;
+  constructor(name: string, species: string) {
+    this.name = name;
+    this.species = species;
+  }
+
+  makeSound() {
+    console.log(`${this.name} is making sound.`);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name: string) {
+    super(name, "dog");
+  }
+  makeBark() {
+    console.log("I am barking...");
+  }
+}
+class Cat extends Animal {
+  constructor(name: string) {
+    super(name, "cat");
+  }
+  makeMeaw() {
+    console.log("I am Meawing...");
+  }
+}
+
+/* const getAnimal = (animal: Animal) => {
+  if (animal instanceof Dog) {
+    animal.makeBark();
+  } else if (animal instanceof Cat) {
+    animal.makeMeaw();
+  } else {
+    animal.makeSound();
+  }
+}; */
+
+const isDag = (animal: Animal): animal is Dog => {
+  return animal instanceof Dog;
+};
+const isCat = (animal: Animal): animal is Cat => {
+  return animal instanceof Cat;
+};
+
+const getAnimal = (animal: Animal) => {
+  if (isDag(animal)) {
+    animal.makeBark();
+  } else if (isCat(animal)) {
+    animal.makeMeaw();
+  } else {
+    animal.makeSound();
+  }
+};
+
+const dog = new Dog("Dog Babaji");
+const cat = new Cat("Cat Babaji");
+
+getAnimal(dog);
+getAnimal(cat);
+```
+
+## OOP: Access Modifier (Encapsulation)
+
+```
+- public: can accessible from anywhere and changeable
+- private : Only accessible from that class
+- protected : Only accessible from that class and child class of that object
+- readonly : Only Readable cannot changeable
+```
+
+```ts
+class BankAccount {
+  public readonly id: number;
+  public name: string;
+  private _business: string;
+  protected _balance: number;
+  constructor(id: number, name: string, business: string, balance: number) {
+    this.id = id;
+    this.name = name;
+    this._business = business;
+    this._balance = balance;
+  }
+  public getBusiness(): string {
+    return this._business;
+  }
+  public depositMoney(amount: number): void {
+    this._balance += amount;
+  }
+  public getBalance(): number {
+    return this._balance;
+  }
+}
+
+const poorAccount = new BankAccount(123, "Mr Poor", "Farmer", 10000);
+console.log(poorAccount.getBusiness());
+poorAccount.depositMoney(5000);
+console.log(poorAccount.getBalance());
+
+class StudentAccount extends BankAccount {
+  constructor(id: number, name: string, business: string, balance: number) {
+    super(id, name, business, balance);
+  }
+
+  public addStipend(amount: number): void {
+    this._balance += amount;
+  }
+}
+
+const studentAccount = new StudentAccount(324, "Mr Student", "Student", 5000);
+studentAccount.addStipend(2000);
+console.log(studentAccount.getBalance());
+```
+
+```
+
+```
+
+## OOP: Getter & Setter
+
+```ts
+class BankAccount {
+  public readonly id: number;
+  public name: string;
+  private _business: string;
+  protected _balance: number;
+  constructor(id: number, name: string, business: string, balance: number) {
+    this.id = id;
+    this.name = name;
+    this._business = business;
+    this._balance = balance;
+  }
+
+  public get balance(): number {
+    return this._balance;
+  }
+
+  public set deposit(amount: number) {
+    this._balance += amount;
+  }
+}
+
+const poorAccount = new BankAccount(123, "Mr Poor", "Farmer", 10000);
+console.log(poorAccount.balance);
+poorAccount.deposit = 5000;
+console.log(poorAccount.balance);
+```
+
+## OOP: statics
+
+```ts
+class Counter {
+  static count: number = 0;
+  static increment() {
+    return (Counter.count += 1);
+  }
+  static decrement() {
+    return (Counter.count -= 1);
+  }
+}
+
+console.log(Counter.increment());
+console.log(Counter.increment());
+console.log(Counter.increment());
+console.log(Counter.decrement());
+```
+
+## OOP: Polymorphism
+
+```ts
+// ----------->> Polymorphism <<-----------
+class Shape {
+  getArea(): number {
+    return 0;
+  }
+}
+class Circle extends Shape {
+  public constructor(public radius: number) {
+    super();
+  }
+
+  public getArea(): number {
+    return Math.PI * this.radius * this.radius;
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(public width: number, public height: number) {
+    super();
+  }
+  public getArea(): number {
+    return this.width * this.height;
+  }
+}
+```
+
+## OOP: Abstraction
+
+- Using Interfaces
+
+```ts
+interface Vehicle1 {
+  startEngine(): void;
+  stopEngine(): void;
+  move(): void;
+}
+
+class Car1 implements Vehicle1 {
+  startEngine(): void {
+    console.log("I am starting the car engine..");
+  }
+  stopEngine(): void {
+    console.log("I am moving the car engine..");
+  }
+  move(): void {
+    console.log("I am running..");
+  }
+}
+```
+
+- using abstract
+
+```ts
+abstract class Vehicle2 {
+  abstract startEngine(): void;
+  abstract stopEngine(): void;
+  abstract move(): void;
+}
+
+class Car2 extends Vehicle2 {
+  startEngine(): void {
+    console.log("I am starting the car engine..");
+  }
+  stopEngine(): void {
+    console.log("I am moving the car engine..");
+  }
+  move(): void {
+    console.log("I am running..");
+  }
+}
+```
